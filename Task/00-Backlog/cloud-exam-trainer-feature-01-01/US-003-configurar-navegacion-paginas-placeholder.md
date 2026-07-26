@@ -2,7 +2,7 @@
 id: 3
 type: "User Story"
 title: "US-003 - Configurar navegación y páginas placeholder"
-state: "New"
+state: "Done"
 epic: "01 - MVP inicial"
 feature: "01.01 - Proyecto frontend base"
 ---
