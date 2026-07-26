@@ -13,7 +13,7 @@ export class QuestionValidationError extends Error {
 }
 
 function loadAndValidate(data: unknown, source?: string): Question[] {
-  const result = validateQuestions(data, source)
+  const result = validateQuestions(data)
   if (!result.valid) {
     throw new QuestionValidationError(
       `Failed to load questions${source ? ` from ${source}` : ''}`,

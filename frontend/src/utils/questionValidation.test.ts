@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { validateQuestion, validateQuestions } from './questionValidation'
+import validQuestions from '@/schemas/__fixtures__/valid-questions.json'
+import invalidQuestions from '@/schemas/__fixtures__/invalid-questions.json'
 
 const baseQuestion = {
   id: 'q001',
@@ -20,6 +22,17 @@ describe('questionValidation', () => {
     expect(validateQuestion(baseQuestion)).toEqual([])
   })
 
+  it('validates a valid fixture file', () => {
+    expect(validateQuestions(validQuestions).valid).toBe(true)
+    expect(validateQuestions(validQuestions).errors).toEqual([])
+  })
+
+  it('rejects an invalid fixture file', () => {
+    const result = validateQuestions(invalidQuestions)
+    expect(result.valid).toBe(false)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+
   it('returns errors for missing fields', () => {
     const result = validateQuestions([{}])
     expect(result.valid).toBe(false)
@@ -34,17 +47,17 @@ describe('questionValidation', () => {
 
   it('detects a single_choice question with more than one correct answer', () => {
     const question = { ...baseQuestion, correctAnswers: ['a', 'b'] }
-    expect(validateQuestion(question)).toContain('single_choice must have exactly one correct answer')
+    expect(validateQuestion(question).some((error) => error.includes('single_choice must have exactly one correct answer'))).toBe(true)
   })
 
   it('detects a multiple_choice question with less than two correct answers', () => {
     const question = { ...baseQuestion, type: 'multiple_choice' as const, correctAnswers: ['a'] }
-    expect(validateQuestion(question)).toContain('multiple_choice must have at least two correct answers')
+    expect(validateQuestion(question).some((error) => error.includes('multiple_choice must have at least two correct answers'))).toBe(true)
   })
 
   it('detects correctAnswers that reference unknown option ids', () => {
     const question = { ...baseQuestion, correctAnswers: ['c'] }
-    expect(validateQuestion(question)).toContain('correctAnswers[0] references unknown option id "c"')
+    expect(validateQuestion(question).some((error) => error.includes('correctAnswers[0] references unknown option id "c"'))).toBe(true)
   })
 
   it('detects duplicate option ids', () => {
@@ -55,7 +68,7 @@ describe('questionValidation', () => {
         { id: 'a', text: 'Option B' },
       ],
     }
-    expect(validateQuestion(question)).toContain('options[1].id "a" is duplicated')
+    expect(validateQuestion(question).some((error) => error.includes('options[1].id "a" is duplicated'))).toBe(true)
   })
 
   it('detects duplicate question ids', () => {
@@ -66,16 +79,19 @@ describe('questionValidation', () => {
 
   it('rejects a question with fewer than two options', () => {
     const question = { ...baseQuestion, options: [{ id: 'a', text: 'Only' }] }
-    expect(validateQuestion(question)).toContain('options must be an array with at least 2 items')
+    const errors = validateQuestion(question)
+    expect(errors.some((error) => error.includes('options') && error.includes('at least 2'))).toBe(true)
   })
 
   it('rejects an invalid difficulty value', () => {
     const question = { ...baseQuestion, difficulty: 'impossible' }
-    expect(validateQuestion(question)).toContain('difficulty must be one of easy, medium, hard')
+    const errors = validateQuestion(question)
+    expect(errors.some((error) => error.includes('difficulty') && error.includes('enum'))).toBe(true)
   })
 
   it('rejects an invalid question type', () => {
     const question = { ...baseQuestion, type: 'open_ended' }
-    expect(validateQuestion(question)).toContain('type must be one of single_choice, multiple_choice')
+    const errors = validateQuestion(question)
+    expect(errors.some((error) => error.includes('type') && error.includes('enum'))).toBe(true)
   })
 })

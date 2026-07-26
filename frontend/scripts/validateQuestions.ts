@@ -26,7 +26,7 @@ for (const file of files) {
     continue
   }
 
-  const result = validateQuestions(data, filePath)
+  const result = validateQuestions(data)
   if (!result.valid) {
     hasErrors = true
     console.error(`File: ${filePath}`)

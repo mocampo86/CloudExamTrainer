@@ -1,0 +1,28 @@
+[
+  {
+    "id": "q001",
+    "topic": "Compute",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "What is the answer?",
+    "options": [
+      { "id": "a", "text": "Option A" },
+      { "id": "a", "text": "Option B" }
+    ],
+    "correctAnswers": ["c"],
+    "explanation": "Explanation text."
+  },
+  {
+    "id": "q001",
+    "topic": "Storage",
+    "difficulty": "easy",
+    "type": "multiple_choice",
+    "question": "Which are storage services?",
+    "options": [
+      { "id": "x", "text": "Blob" },
+      { "id": "y", "text": "Queue" }
+    ],
+    "correctAnswers": ["x"],
+    "explanation": "Explanation text."
+  }
+]
