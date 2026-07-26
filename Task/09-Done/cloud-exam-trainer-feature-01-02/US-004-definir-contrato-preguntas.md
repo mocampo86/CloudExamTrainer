@@ -2,7 +2,7 @@
 id: 4
 type: "User Story"
 title: "US-004 - Definir contrato de preguntas"
-state: "New"
+state: "Done"
 epic: "01 - MVP inicial"
 feature: "01.02 - Modelo y carga de preguntas"
 ---

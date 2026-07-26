@@ -1,0 +1,31 @@
+[
+  {
+    "id": "q001",
+    "topic": "Azure Compute",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "Which Azure service lets you run containers without managing servers?",
+    "options": [
+      { "id": "opt1", "text": "Azure Container Instances" },
+      { "id": "opt2", "text": "Azure Virtual Machines" },
+      { "id": "opt3", "text": "Azure App Service" }
+    ],
+    "correctAnswers": ["opt1"],
+    "explanation": "Azure Container Instances runs containers without requiring server management."
+  },
+  {
+    "id": "q002",
+    "topic": "Azure Storage",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "question": "Which of the following are Azure Storage services?",
+    "options": [
+      { "id": "opt1", "text": "Blob Storage" },
+      { "id": "opt2", "text": "File Storage" },
+      { "id": "opt3", "text": "SQL Database" },
+      { "id": "opt4", "text": "Queue Storage" }
+    ],
+    "correctAnswers": ["opt1", "opt2", "opt4"],
+    "explanation": "Blob, File and Queue Storage are Azure Storage services; SQL Database is a relational database service."
+  }
+]
