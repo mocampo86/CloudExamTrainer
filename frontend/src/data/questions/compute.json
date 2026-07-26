@@ -1,0 +1,16 @@
+[
+  {
+    "id": "cmp001",
+    "topic": "Compute",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "Which Azure service lets you run containers without managing servers?",
+    "options": [
+      { "id": "opt1", "text": "Azure Container Instances" },
+      { "id": "opt2", "text": "Azure Virtual Machines" },
+      { "id": "opt3", "text": "Azure App Service" }
+    ],
+    "correctAnswers": ["opt1"],
+    "explanation": "Azure Container Instances runs containers without requiring server management."
+  }
+]

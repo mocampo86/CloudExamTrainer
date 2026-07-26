@@ -1,0 +1,29 @@
+[
+  {
+    "id": "sec001",
+    "topic": "Security",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "Which Azure service helps protect web applications from common exploits?",
+    "options": [
+      { "id": "opt1", "text": "Azure Firewall" },
+      { "id": "opt2", "text": "Azure WAF" },
+      { "id": "opt3", "text": "Azure Sentinel" }
+    ],
+    "correctAnswers": ["opt2"],
+    "explanation": "Azure Web Application Firewall (WAF) protects web apps from common exploits like SQL injection."
+  },
+  {
+    "id": "sec002",
+    "topic": "Security",
+    "difficulty": "medium",
+    "type": "single_choice",
+    "question": "Which Azure feature manages encryption keys in the cloud?",
+    "options": [
+      { "id": "opt1", "text": "Azure Key Vault" },
+      { "id": "opt2", "text": "Azure Policy" }
+    ],
+    "correctAnswers": ["opt1"],
+    "explanation": "Azure Key Vault is used to securely store and manage secrets, keys, and certificates."
+  }
+]

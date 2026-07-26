@@ -1,0 +1,16 @@
+[
+  {
+    "id": "net001",
+    "topic": "Networking",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "Which Azure resource provides a private network in the cloud?",
+    "options": [
+      { "id": "opt1", "text": "Virtual Network" },
+      { "id": "opt2", "text": "Load Balancer" },
+      { "id": "opt3", "text": "DNS Zone" }
+    ],
+    "correctAnswers": ["opt1"],
+    "explanation": "Azure Virtual Network lets you create isolated private networks in the cloud."
+  }
+]

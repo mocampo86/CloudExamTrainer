@@ -1,0 +1,16 @@
+[
+  {
+    "id": "db001",
+    "topic": "Databases",
+    "difficulty": "easy",
+    "type": "multiple_choice",
+    "question": "Which of the following are Azure database services?",
+    "options": [
+      { "id": "opt1", "text": "Azure SQL Database" },
+      { "id": "opt2", "text": "Azure Cosmos DB" },
+      { "id": "opt3", "text": "Azure Blob Storage" }
+    ],
+    "correctAnswers": ["opt1", "opt2"],
+    "explanation": "Azure SQL Database and Azure Cosmos DB are managed database services; Blob Storage is object storage."
+  }
+]

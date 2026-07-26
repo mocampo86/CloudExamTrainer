@@ -1,0 +1,16 @@
+[
+  {
+    "id": "sto001",
+    "topic": "Storage",
+    "difficulty": "easy",
+    "type": "single_choice",
+    "question": "Which Azure service is ideal for storing unstructured data like images and videos?",
+    "options": [
+      { "id": "opt1", "text": "Azure Blob Storage" },
+      { "id": "opt2", "text": "Azure SQL Database" },
+      { "id": "opt3", "text": "Azure Files" }
+    ],
+    "correctAnswers": ["opt1"],
+    "explanation": "Azure Blob Storage is designed for storing large amounts of unstructured data."
+  }
+]
