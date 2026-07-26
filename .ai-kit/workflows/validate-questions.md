@@ -1,0 +1,1 @@
+Validar estructura JSON antes del merge.

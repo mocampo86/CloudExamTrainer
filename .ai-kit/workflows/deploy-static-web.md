@@ -1,0 +1,1 @@
+Verificar build y desplegar Azure Static Web Apps.

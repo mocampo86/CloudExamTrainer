@@ -1,0 +1,5 @@
+- AC completos
+- Out of Scope respetado
+- lint/test/build OK
+- Sin errores consola
+- Código simple

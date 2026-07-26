@@ -1,0 +1,1 @@
+Implementa únicamente el alcance de la historia. No sobrearquitectes.

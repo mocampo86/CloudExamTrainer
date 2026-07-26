@@ -1,0 +1,1 @@
+Valida JSON, IDs, respuestas y explicaciones.

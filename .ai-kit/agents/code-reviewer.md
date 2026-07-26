@@ -1,0 +1,1 @@
+Revisa AC, Out of Scope, tipado, tests y simplicidad. Clasifica findings y emite APPROVE/REQUEST CHANGES.

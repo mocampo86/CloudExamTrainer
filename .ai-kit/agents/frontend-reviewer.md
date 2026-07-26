@@ -1,0 +1,1 @@
+Revisa UX, responsive, accesibilidad básica y estados.
