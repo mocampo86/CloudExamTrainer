@@ -18,7 +18,7 @@ El archivo de preguntas es un JSON que contiene un array de objetos `Question`.
 ## Reglas
 
 - Para `single_choice`, `correctAnswers` debe contener exactamente un `id`.
-- Para `multiple_choice`, `correctAnswers` debe contener uno o más `id`.
+- Para `multiple_choice`, `correctAnswers` debe contener al menos dos `id`.
 - Cada valor de `correctAnswers` debe coincidir con el `id` de una opción existente.
 - Los nombres de propiedades coinciden con el modelo TypeScript.
 
