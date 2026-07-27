@@ -69,6 +69,10 @@ export function getQuestionCountByTopic(topic: string): number {
   return getQuestionsByTopic(topic).length
 }
 
+export function getQuestionById(id: string): Question | undefined {
+  return loadedQuestions.find((question) => question.id === id)
+}
+
 export function createQuizSession(config: { topic: string; count: number }): QuizSession {
   const questions = getRandomQuestions(config.count, config.topic)
   return buildQuizSession(config.topic, questions.map((question) => question.id))

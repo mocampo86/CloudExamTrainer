@@ -15,7 +15,7 @@ describe('App navigation', () => {
     const testRouter = createMemoryRouter(routes, { initialEntries: ['/'] })
     render(<RouterProvider router={testRouter} />)
     await userEvent.click(screen.getByRole('link', { name: /cuestionario/i }))
-    expect(screen.getByText('Aquí se mostrarán las preguntas del cuestionario.')).toBeInTheDocument()
+    expect(screen.getByText('No hay un cuestionario activo.')).toBeInTheDocument()
   })
 
   it('renders Not Found for unknown routes', () => {
