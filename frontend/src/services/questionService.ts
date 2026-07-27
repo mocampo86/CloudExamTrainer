@@ -1,4 +1,6 @@
 import type { Question } from '@/models/Question'
+import type { QuizSession } from '@/models/QuizSession'
+import { createQuizSession as buildQuizSession } from '@/models/QuizSession'
 import { validateQuestions } from '@/utils/questionValidation'
 import rawQuestions from '@/data/questions'
 
@@ -56,4 +58,18 @@ export function getRandomQuestions(count: number, topic?: string): Question[] {
   }
 
   return shuffled.slice(0, count)
+}
+
+export function getTopics(): string[] {
+  const topics = new Set(loadedQuestions.map((question) => question.topic))
+  return [...topics].sort((a, b) => a.localeCompare(b))
+}
+
+export function getQuestionCountByTopic(topic: string): number {
+  return getQuestionsByTopic(topic).length
+}
+
+export function createQuizSession(config: { topic: string; count: number }): QuizSession {
+  const questions = getRandomQuestions(config.count, config.topic)
+  return buildQuizSession(config.topic, questions.map((question) => question.id))
 }

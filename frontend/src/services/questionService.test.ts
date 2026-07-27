@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { getAllQuestions, getQuestionsByTopic, getRandomQuestions } from './questionService'
+import {
+  getAllQuestions,
+  getQuestionsByTopic,
+  getRandomQuestions,
+  getTopics,
+  getQuestionCountByTopic,
+  createQuizSession,
+} from './questionService'
 
 describe('questionService', () => {
   it('loads all questions', () => {
@@ -42,5 +49,26 @@ describe('questionService', () => {
 
   it('throws when the requested count exceeds the available questions for a topic', () => {
     expect(() => getRandomQuestions(5, 'Security')).toThrow()
+  })
+
+  it('returns the list of available topics sorted alphabetically', () => {
+    const topics = getTopics()
+    expect(topics.length).toBeGreaterThan(0)
+    expect(topics).toEqual([...topics].sort((a, b) => a.localeCompare(b)))
+    expect(new Set(topics).size).toBe(topics.length)
+  })
+
+  it('returns the number of questions for a topic', () => {
+    expect(getQuestionCountByTopic('Security')).toBe(2)
+    expect(getQuestionCountByTopic('Unknown')).toBe(0)
+  })
+
+  it('creates a quiz session with selected topic and question ids', () => {
+    const session = createQuizSession({ topic: 'Security', count: 2 })
+    expect(session.topic).toBe('Security')
+    expect(session.questionIds).toHaveLength(2)
+    expect(session.currentIndex).toBe(0)
+    expect(session.status).toBe('in_progress')
+    expect(session.answers).toEqual({})
   })
 })
