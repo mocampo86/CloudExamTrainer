@@ -20,6 +20,7 @@ const testSession: QuizSession = {
   currentIndex: 0,
   answers: {},
   status: 'in_progress',
+  startedAt: '2026-07-26T00:00:00.000Z',
 }
 
 describe('QuizPage', () => {
@@ -66,5 +67,75 @@ describe('QuizPage', () => {
 
     expect(screen.getByLabelText('Azure SQL Database')).toBeChecked()
     expect(screen.getByLabelText('Azure Cosmos DB')).toBeChecked()
+  })
+
+  it('disables the Previous button on the first question', () => {
+    renderWithSession(testSession)
+    expect(screen.getByRole('button', { name: /anterior/i })).toBeDisabled()
+  })
+
+  it('shows the Finish button on the last question', () => {
+    renderWithSession({ ...testSession, currentIndex: 1 })
+    expect(screen.getByRole('button', { name: /finalizar$/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /siguiente/i })).not.toBeInTheDocument()
+  })
+
+  it('shows a confirmation with the number of pending questions when finishing', async () => {
+    const { user } = renderWithSession({ ...testSession, currentIndex: 1 })
+
+    await user.click(screen.getByRole('button', { name: /finalizar$/i }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByText('Quedan 2 preguntas sin responder.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /confirmar y finalizar/i })).toBeInTheDocument()
+  })
+
+  it('can cancel the finish confirmation and continue answering', async () => {
+    const { user } = renderWithSession({ ...testSession, currentIndex: 1 })
+
+    await user.click(screen.getByRole('button', { name: /finalizar$/i }))
+    await user.click(screen.getByRole('button', { name: /cancelar/i }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /finalizar$/i })).toBeInTheDocument()
+  })
+
+  it('finishes directly and navigates to results when all questions are answered', async () => {
+    const { user, router } = renderWithSession(testSession)
+
+    await user.click(screen.getByLabelText('Azure WAF'))
+    await user.click(screen.getByRole('button', { name: /siguiente/i }))
+    await user.click(screen.getByLabelText('Azure SQL Database'))
+    await user.click(screen.getByLabelText('Azure Cosmos DB'))
+
+    await user.click(screen.getByRole('button', { name: /finalizar$/i }))
+
+    expect(router.state.location.pathname).toBe('/results')
+
+    const state = router.state.location.state as { attempt: QuizSession } | undefined
+    expect(state?.attempt.status).toBe('completed')
+    expect(state?.attempt.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+    expect(state?.attempt.startedAt).toBe(testSession.startedAt)
+    expect(state?.attempt.topic).toBe('Mixed')
+    expect(state?.attempt.questionIds).toEqual(['sec001', 'db001'])
+    expect(state?.attempt.answers).toEqual({
+      sec001: ['opt2'],
+      db001: ['opt1', 'opt2'],
+    })
+  })
+
+  it('confirms finishing when there are pending questions and navigates to results', async () => {
+    const { user, router } = renderWithSession({ ...testSession, currentIndex: 1 })
+
+    await user.click(screen.getByRole('button', { name: /finalizar$/i }))
+    await user.click(screen.getByRole('button', { name: /confirmar y finalizar/i }))
+
+    expect(router.state.location.pathname).toBe('/results')
+
+    const state = router.state.location.state as { attempt: QuizSession } | undefined
+    expect(state?.attempt.status).toBe('completed')
+    expect(state?.attempt.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+    expect(state?.attempt.answers).toEqual({})
   })
 })

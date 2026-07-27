@@ -7,6 +7,8 @@ export interface QuizSession {
   currentIndex: number
   answers: Record<string, string[]>
   status: QuizSessionStatus
+  startedAt: string
+  finishedAt?: string
 }
 
 function generateSessionId(): string {
@@ -25,5 +27,6 @@ export function createQuizSession(topic: string, questionIds: string[]): QuizSes
     currentIndex: 0,
     answers: {},
     status: 'in_progress',
+    startedAt: new Date().toISOString(),
   }
 }

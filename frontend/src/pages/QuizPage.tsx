@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCard } from '@/components/QuestionCard'
 import { getQuestionById } from '@/services/questionService'
 import type { QuizSession } from '@/models/QuizSession'
@@ -10,10 +10,19 @@ function getProgressPercent(current: number, total: number): number {
   return ((current + 1) / total) * 100
 }
 
+function countPendingAnswers(session: QuizSession): number {
+  return session.questionIds.filter((questionId) => {
+    const answer = session.answers[questionId]
+    return !answer || answer.length === 0
+  }).length
+}
+
 export function QuizPage() {
   const location = useLocation()
+  const navigate = useNavigate()
   const initialSession = (location.state as { session?: QuizSession } | undefined)?.session
   const [session, setSession] = useState<QuizSession | null>(initialSession ?? null)
+  const [showFinishConfirmation, setShowFinishConfirmation] = useState(false)
 
   if (!session) {
     return (
@@ -57,6 +66,30 @@ export function QuizPage() {
     }
   }
 
+  const finishQuiz = () => {
+    const finishedAt = new Date().toISOString()
+    const completedSession: QuizSession = {
+      ...session,
+      status: 'completed',
+      finishedAt,
+    }
+    setSession(completedSession)
+    navigate('/results', { state: { attempt: completedSession } })
+  }
+
+  const handleFinishRequest = () => {
+    const pending = countPendingAnswers(session)
+    if (pending === 0) {
+      finishQuiz()
+    } else {
+      setShowFinishConfirmation(true)
+    }
+  }
+
+  const handleCancelFinish = () => {
+    setShowFinishConfirmation(false)
+  }
+
   if (!currentQuestion) {
     return (
       <section>
@@ -68,6 +101,8 @@ export function QuizPage() {
 
   const selectedAnswerIds = session.answers[currentQuestionId] ?? []
   const progress = getProgressPercent(session.currentIndex, session.questionIds.length)
+  const isLastQuestion = session.currentIndex === session.questionIds.length - 1
+  const pendingCount = showFinishConfirmation ? countPendingAnswers(session) : 0
 
   return (
     <section>
@@ -97,10 +132,22 @@ export function QuizPage() {
         <button onClick={handlePrevious} disabled={session.currentIndex === 0}>
           Anterior
         </button>
-        <button onClick={handleNext} disabled={session.currentIndex === session.questionIds.length - 1}>
-          Siguiente
-        </button>
+        {isLastQuestion ? (
+          <button onClick={handleFinishRequest}>Finalizar</button>
+        ) : (
+          <button onClick={handleNext} disabled={session.currentIndex === session.questionIds.length - 1}>
+            Siguiente
+          </button>
+        )}
       </div>
+      {showFinishConfirmation && (
+        <div role="dialog" aria-modal="true" aria-labelledby="finish-title">
+          <h2 id="finish-title">Confirmar finalización</h2>
+          <p>Quedan {pendingCount} preguntas sin responder.</p>
+          <button onClick={handleCancelFinish}>Cancelar</button>
+          <button onClick={finishQuiz}>Confirmar y finalizar</button>
+        </div>
+      )}
     </section>
   )
 }
