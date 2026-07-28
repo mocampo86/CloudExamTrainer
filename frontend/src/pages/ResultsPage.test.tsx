@@ -100,9 +100,9 @@ describe('ResultsPage', () => {
     await user.click(screen.getByRole('button', { name: /repetir cuestionario/i }))
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: /cuestionario/i })).toBeInTheDocument()
+      expect(
+        screen.getByText((_, element) => element?.textContent?.trim() === 'Pregunta 1 de 2'),
+      ).toBeInTheDocument()
     })
-    expect(
-      screen.getByText((_, element) => element?.textContent === 'Pregunta 1 de 2'),
-    ).toBeInTheDocument()
   })
 })

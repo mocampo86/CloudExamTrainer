@@ -2,8 +2,9 @@ import type { Question } from '@/models/Question'
 import type { QuizSession } from '@/models/QuizSession'
 import { createQuizSession as buildQuizSession } from '@/models/QuizSession'
 import { getCertificationById } from '@/services/certificationService'
-import { validateQuestions } from '@/utils/questionValidation'
-import rawQuestions from '@/data/questions'
+import { migrateQuestionBankToLegacy } from '@/services/questionBankMigration'
+import { questionBanksSchema } from '@/schemas/questionBankSchema'
+import rawQuestionBanks from '@/data/questionBanks'
 
 export const DEFAULT_CERTIFICATION_EXAM_ID = 'saa-c03'
 
@@ -18,17 +19,17 @@ export class QuestionValidationError extends Error {
 }
 
 function loadAndValidate(data: unknown, source?: string): Question[] {
-  const result = validateQuestions(data)
-  if (!result.valid) {
+  const result = questionBanksSchema.safeParse(data)
+  if (!result.success) {
     throw new QuestionValidationError(
-      `Failed to load questions${source ? ` from ${source}` : ''}`,
-      result.errors,
+      `Failed to load question banks${source ? ` from ${source}` : ''}`,
+      result.error.issues.map((issue) => issue.message),
     )
   }
-  return data as Question[]
+  return result.data.map(migrateQuestionBankToLegacy)
 }
 
-const loadedQuestions = loadAndValidate(rawQuestions, 'src/data/questions/index.ts')
+const loadedQuestions = loadAndValidate(rawQuestionBanks, 'src/data/questionBanks/index.ts')
 
 function filterByCertification(questions: Question[], certificationExamId?: string): Question[] {
   if (certificationExamId === undefined) return questions

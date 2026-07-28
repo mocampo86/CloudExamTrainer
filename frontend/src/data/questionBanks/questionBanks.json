@@ -1,0 +1,229 @@
+[
+  {
+    "id": "cmp001",
+    "certificationExamId": "saa-c03",
+    "topicId": "Compute",
+    "statement": "Which Azure service lets you run containers without managing servers?",
+    "explanation": "Azure Container Instances runs containers without requiring server management.",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "cmp001",
+        "text": "Azure Container Instances",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "cmp001",
+        "text": "Azure Virtual Machines",
+        "isCorrect": false,
+        "displayOrder": 1
+      },
+      {
+        "id": "opt3",
+        "questionId": "cmp001",
+        "text": "Azure App Service",
+        "isCorrect": false,
+        "displayOrder": 2
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  },
+  {
+    "id": "db001",
+    "certificationExamId": "saa-c03",
+    "topicId": "Databases",
+    "statement": "Which of the following are Azure database services?",
+    "explanation": "Azure SQL Database and Azure Cosmos DB are managed database services; Blob Storage is object storage.",
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "db001",
+        "text": "Azure SQL Database",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "db001",
+        "text": "Azure Cosmos DB",
+        "isCorrect": true,
+        "displayOrder": 1
+      },
+      {
+        "id": "opt3",
+        "questionId": "db001",
+        "text": "Azure Blob Storage",
+        "isCorrect": false,
+        "displayOrder": 2
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  },
+  {
+    "id": "net001",
+    "certificationExamId": "saa-c03",
+    "topicId": "Networking",
+    "statement": "Which Azure resource provides a private network in the cloud?",
+    "explanation": "Azure Virtual Network lets you create isolated private networks in the cloud.",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "net001",
+        "text": "Virtual Network",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "net001",
+        "text": "Load Balancer",
+        "isCorrect": false,
+        "displayOrder": 1
+      },
+      {
+        "id": "opt3",
+        "questionId": "net001",
+        "text": "DNS Zone",
+        "isCorrect": false,
+        "displayOrder": 2
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  },
+  {
+    "id": "sec001",
+    "certificationExamId": "saa-c03",
+    "topicId": "Security",
+    "statement": "Which Azure service helps protect web applications from common exploits?",
+    "explanation": "Azure Web Application Firewall (WAF) protects web apps from common exploits like SQL injection.",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "sec001",
+        "text": "Azure Firewall",
+        "isCorrect": false,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "sec001",
+        "text": "Azure WAF",
+        "isCorrect": true,
+        "displayOrder": 1
+      },
+      {
+        "id": "opt3",
+        "questionId": "sec001",
+        "text": "Azure Sentinel",
+        "isCorrect": false,
+        "displayOrder": 2
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  },
+  {
+    "id": "sec002",
+    "certificationExamId": "saa-c03",
+    "topicId": "Security",
+    "statement": "Which Azure feature manages encryption keys in the cloud?",
+    "explanation": "Azure Key Vault is used to securely store and manage secrets, keys, and certificates.",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "sec002",
+        "text": "Azure Key Vault",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "sec002",
+        "text": "Azure Policy",
+        "isCorrect": false,
+        "displayOrder": 1
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  },
+  {
+    "id": "sto001",
+    "certificationExamId": "saa-c03",
+    "topicId": "Storage",
+    "statement": "Which Azure service is ideal for storing unstructured data like images and videos?",
+    "explanation": "Azure Blob Storage is designed for storing large amounts of unstructured data.",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "status": "active",
+    "language": "en",
+    "isActive": true,
+    "options": [
+      {
+        "id": "opt1",
+        "questionId": "sto001",
+        "text": "Azure Blob Storage",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "id": "opt2",
+        "questionId": "sto001",
+        "text": "Azure SQL Database",
+        "isCorrect": false,
+        "displayOrder": 1
+      },
+      {
+        "id": "opt3",
+        "questionId": "sto001",
+        "text": "Azure Files",
+        "isCorrect": false,
+        "displayOrder": 2
+      }
+    ],
+    "tagIds": [],
+    "references": [],
+    "createdAt": "2026-07-28T18:51:27.820Z",
+    "updatedAt": "2026-07-28T18:51:27.820Z"
+  }
+]
