@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCard } from '@/components/QuestionCard'
 import { getQuestionById } from '@/services/questionService'
+import { calculateQuizResult } from '@/services/scoringService'
+import type { Question } from '@/models/Question'
 import type { QuizSession } from '@/models/QuizSession'
 import type { QuizAnswer } from '@/models/QuizAnswer'
 
@@ -26,16 +28,28 @@ export function QuizPage() {
 
   if (!session) {
     return (
-      <section>
+      <section className="empty-state">
         <h1>Cuestionario</h1>
         <p>No hay un cuestionario activo.</p>
-        <Link to="/">Volver al inicio</Link>
+        <Link to="/" className="btn btn-secondary">
+          Volver al inicio
+        </Link>
       </section>
     )
   }
 
   const currentQuestionId = session.questionIds[session.currentIndex]
   const currentQuestion = currentQuestionId ? getQuestionById(currentQuestionId) : undefined
+
+  const allQuestions = useMemo(() => {
+    return session.questionIds
+      .map((id) => getQuestionById(id))
+      .filter((question): question is Question => question !== undefined)
+  }, [session])
+
+  const partialResult = useMemo(() => {
+    return calculateQuizResult(allQuestions, session.answers)
+  }, [allQuestions, session.answers])
 
   const handleAnswerChange = (answerIds: QuizAnswer) => {
     setSession((prev) => {
@@ -92,9 +106,12 @@ export function QuizPage() {
 
   if (!currentQuestion) {
     return (
-      <section>
+      <section className="empty-state">
         <h1>Cuestionario</h1>
         <p>La pregunta no está disponible.</p>
+        <Link to="/" className="btn btn-secondary">
+          Volver al inicio
+        </Link>
       </section>
     )
   }
@@ -105,47 +122,69 @@ export function QuizPage() {
   const pendingCount = showFinishConfirmation ? countPendingAnswers(session) : 0
 
   return (
-    <section>
-      <h1>Cuestionario</h1>
-      <p>Pregunta {session.currentIndex + 1} de {session.questionIds.length}</p>
-      <div
-        role="progressbar"
-        aria-valuenow={Math.round(progress)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Progreso del cuestionario"
-      >
+    <section className="quiz-page">
+      <header className="quiz-header">
+        <h1 className="quiz-header__title">Cuestionario</h1>
+        <div className="quiz-header__meta">
+          <span className="quiz-header__topic">{session.topic}</span>
+          <span>Pregunta {session.currentIndex + 1} de {session.questionIds.length}</span>
+          <span>Puntaje parcial: {partialResult.correctCount} de {partialResult.totalQuestions}</span>
+        </div>
         <div
-          style={{
-            width: `${progress}%`,
-            height: '8px',
-            backgroundColor: 'currentColor',
-          }}
-        />
-      </div>
+          className="progress-bar"
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Progreso del cuestionario"
+        >
+          <div className="progress-bar__fill" style={{ width: `${progress}%` }} />
+        </div>
+      </header>
+
       <QuestionCard
         question={currentQuestion}
         selectedAnswerIds={selectedAnswerIds}
         onAnswerChange={handleAnswerChange}
       />
-      <div>
-        <button onClick={handlePrevious} disabled={session.currentIndex === 0}>
+
+      <div className="quiz-actions">
+        <button
+          onClick={handlePrevious}
+          disabled={session.currentIndex === 0}
+          className="btn btn-secondary"
+        >
           Anterior
         </button>
         {isLastQuestion ? (
-          <button onClick={handleFinishRequest}>Finalizar</button>
+          <button onClick={handleFinishRequest} className="btn btn-primary">
+            Finalizar
+          </button>
         ) : (
-          <button onClick={handleNext} disabled={session.currentIndex === session.questionIds.length - 1}>
+          <button
+            onClick={handleNext}
+            disabled={session.currentIndex === session.questionIds.length - 1}
+            className="btn btn-primary"
+          >
             Siguiente
           </button>
         )}
       </div>
+
       {showFinishConfirmation && (
-        <div role="dialog" aria-modal="true" aria-labelledby="finish-title">
-          <h2 id="finish-title">Confirmar finalización</h2>
-          <p>Quedan {pendingCount} preguntas sin responder.</p>
-          <button onClick={handleCancelFinish}>Cancelar</button>
-          <button onClick={finishQuiz}>Confirmar y finalizar</button>
+        <div className="modal-overlay">
+          <div role="dialog" aria-modal="true" aria-labelledby="finish-title" className="card modal">
+            <h2 id="finish-title" className="modal__title">Confirmar finalización</h2>
+            <p className="modal__text">Quedan {pendingCount} preguntas sin responder.</p>
+            <div className="modal__actions">
+              <button onClick={handleCancelFinish} className="btn btn-secondary">
+                Cancelar
+              </button>
+              <button onClick={finishQuiz} className="btn btn-primary">
+                Confirmar y finalizar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

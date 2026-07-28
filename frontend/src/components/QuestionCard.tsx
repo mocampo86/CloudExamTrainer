@@ -26,11 +26,11 @@ export function QuestionCard({ question, selectedAnswerIds, onAnswerChange }: Qu
   }
 
   return (
-    <article aria-label="Pregunta">
-      <h2>{question.question}</h2>
-      <ul>
+    <article className="card question-card" aria-label="Pregunta">
+      <h2 className="question-card__title">{question.question}</h2>
+      <ul className="question-card__options" role="list">
         {question.options.map((option) => (
-          <li key={option.id}>
+          <li key={option.id} className="question-card__option">
             <AnswerOption
               option={option}
               inputType={isMultiple ? 'checkbox' : 'radio'}

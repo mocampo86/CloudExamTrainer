@@ -47,3 +47,24 @@ Permitidas inicialmente:
 - `multiple_choice` debe tener al menos dos respuestas correctas.
 - Toda respuesta incorrecta debe tener explicación.
 - Los archivos deben indicar versión.
+
+## UI/UX
+
+- Interfaz moderna y profesional: cards con sombras sutiles, bordes redondeados y espaciados uniformes.
+- Contenido centrado dentro de un ancho máximo consistente (`max-width: 48rem`).
+- Tipografía legible y jerarquía visual clara (títulos, descripciones, labels, valores).
+- Variables CSS centralizadas en `src/styles/globals.css` para colores, sombras, radios y fuentes.
+- No se utilizan controles HTML con apariencia por defecto (selects, radios, checkboxes deben estar completamente estilizados).
+- Botones y enlaces con estados `hover`, `focus`, `active` y `disabled` visibles.
+- Todos los campos de formulario deben tener labels asociados y foco visible (`focus-visible`).
+- Navegación completa por teclado y roles ARIA apropiados (`progressbar`, `alert`, `dialog`, etc.).
+- Diseño responsive para desktop, tablet y móvil, sin scroll horizontal y con controles táctiles accesibles.
+- Reutilización de componentes visuales existentes (`card`, `btn`, `form-control`, `answer-option`, etc.).
+- Mensajes de error, estados vacíos y confirmaciones con contraste adecuado y texto descriptivo.
+- Indicadores de estado que no dependan únicamente del color (badges con texto, porcentajes con anillos/barras).
+
+### Encabezados de página
+
+- Página de inicio: hero con título y descripción; formulario en card para seleccionar tema y cantidad de preguntas.
+- Página de cuestionario: título `Cuestionario`, tema seleccionado, progreso visual (`Pregunta X de Y`) y puntaje parcial si la lógica lo permite.
+- Página de resultados: título indicando finalización, mensaje motivacional según el puntaje, resumen visual, desempeño por tema, revisión de respuestas y acciones de navegación.

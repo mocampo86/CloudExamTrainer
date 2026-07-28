@@ -60,14 +60,31 @@ export function HomePage() {
   }
 
   return (
-    <section>
-      <h1>Cloud Exam Trainer</h1>
-      <p>Plataforma en construcción para practicar cuestionarios de certificación.</p>
+    <section className="home-page" aria-labelledby="home-title">
+      <div className="hero">
+        <h1 id="home-title" className="hero-title">
+          Prepara tu certificación cloud
+        </h1>
+        <p className="hero-description">
+          Selecciona un tema y la cantidad de preguntas para comenzar a entrenar.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} aria-label="Configurar cuestionario">
-        <div>
-          <label htmlFor="topic">Tema</label>
-          <select id="topic" value={topic} onChange={handleTopicChange}>
+      <form
+        onSubmit={handleSubmit}
+        aria-label="Configurar cuestionario"
+        className="card quiz-form"
+      >
+        <div className="form-group">
+          <label htmlFor="topic" className="form-label">
+            Tema
+          </label>
+          <select
+            id="topic"
+            value={topic}
+            onChange={handleTopicChange}
+            className="form-control"
+          >
             <option value="">Selecciona un tema</option>
             {topics.map((topicName) => (
               <option key={topicName} value={topicName}>
@@ -78,16 +95,21 @@ export function HomePage() {
         </div>
 
         {topic && (
-          <p>{availableCount} pregunta{availableCount !== 1 ? 's' : ''} disponible{availableCount !== 1 ? 's' : ''}</p>
+          <p className="info-text">
+            {availableCount} pregunta{availableCount !== 1 ? 's' : ''} disponible{availableCount !== 1 ? 's' : ''}
+          </p>
         )}
 
-        <div>
-          <label htmlFor="count">Cantidad de preguntas</label>
+        <div className="form-group">
+          <label htmlFor="count" className="form-label">
+            Cantidad de preguntas
+          </label>
           <select
             id="count"
             value={count}
             onChange={handleCountChange}
             disabled={!topic || countOptions.length === 0}
+            className="form-control"
           >
             <option value="">Selecciona cantidad</option>
             {countOptions.map((option) => (
@@ -99,14 +121,18 @@ export function HomePage() {
         </div>
 
         {topic && countOptions.length === 0 && (
-          <p>No hay suficientes preguntas para este tema.</p>
+          <p className="info-text">No hay suficientes preguntas para este tema.</p>
         )}
 
-        <button type="submit">
+        <button type="submit" className="btn btn-primary">
           Iniciar cuestionario
         </button>
 
-        {error && <p role="alert">{error}</p>}
+        {error && (
+          <p className="error-message" role="alert">
+            {error}
+          </p>
+        )}
       </form>
     </section>
   )
