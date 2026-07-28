@@ -64,9 +64,20 @@ Representa una pregunta de un examen de certificación.
 
 - `frontend/src/models/Provider.ts`
 - `frontend/src/models/CertificationExam.ts`
+- `frontend/src/models/Topic.ts`
+- `frontend/src/models/Question.ts`
+- `frontend/src/models/CertificationDto.ts`
 - `frontend/src/schemas/providerSchema.ts`
 - `frontend/src/schemas/certificationExamSchema.ts`
+- `frontend/src/schemas/questionSchema.ts`
+- `frontend/src/data/certifications/index.ts`
+- `frontend/src/services/certificationService.ts`
+- `frontend/src/api/certifications.ts`
 
 ## Alcance actual
 
-Esta versión define únicamente el contrato del modelo y su validación con Zod. No incluye persistencia, migraciones, endpoints, UI ni asociación con preguntas o temas.
+- El contrato del modelo y su validación con Zod están definidos.
+- `Provider` y `CertificationExam` se cargan desde `frontend/src/data/certifications/index.ts`.
+- `Topic` y `Question` incluyen `certificationExamId` para mantener la relación con una certificación.
+- Los servicios y la UI ya consumen el modelo (selector de certificación, cuestionarios y resultados).
+- No se incluye persistencia en base de datos, migraciones ni panel administrativo.
