@@ -5,6 +5,7 @@ import invalidQuestions from '@/schemas/__fixtures__/invalid-questions.json'
 
 const baseQuestion = {
   id: 'q001',
+  certificationExamId: 'saa-c03',
   topic: 'Test',
   difficulty: 'easy',
   type: 'single_choice',
@@ -93,5 +94,12 @@ describe('questionValidation', () => {
     const question = { ...baseQuestion, type: 'open_ended' }
     const errors = validateQuestion(question)
     expect(errors.some((error) => error.includes('type') && error.includes('enum'))).toBe(true)
+  })
+
+  it('rejects a question without certificationExamId', () => {
+    const withoutCert = { ...baseQuestion }
+    delete (withoutCert as Partial<typeof withoutCert>).certificationExamId
+    const errors = validateQuestion(withoutCert)
+    expect(errors.some((error) => error.includes('certificationExamId'))).toBe(true)
   })
 })

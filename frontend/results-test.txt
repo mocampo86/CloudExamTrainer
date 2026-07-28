@@ -1,0 +1,14 @@
+
+> frontend@0.0.0 test
+> vitest run src/pages/ResultsPage.test.tsx --no-color
+
+
+ RUN  v4.1.10 C:/Endava/EndevLocal/source/CloudExamTrainer/frontend
+
+ ✓ src/pages/ResultsPage.test.tsx (7 tests) 771ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  23:46:04
+   Duration  26.03s (transform 2.41s, setup 4.32s, import 4.94s, tests 771ms, environment 13.36s)
+

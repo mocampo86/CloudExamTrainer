@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { QuestionCard } from '@/components/QuestionCard'
 import { getQuestionById } from '@/services/questionService'
 import { calculateQuizResult } from '@/services/scoringService'
+import { createAttemptResult } from '@/services/resultService'
 import type { Question } from '@/models/Question'
 import type { QuizSession } from '@/models/QuizSession'
 import type { QuizAnswer } from '@/models/QuizAnswer'
@@ -39,11 +40,13 @@ export function QuizPage() {
   }
 
   const currentQuestionId = session.questionIds[session.currentIndex]
-  const currentQuestion = currentQuestionId ? getQuestionById(currentQuestionId) : undefined
+  const currentQuestion = currentQuestionId
+    ? getQuestionById(currentQuestionId, session.certificationExamId)
+    : undefined
 
   const allQuestions = useMemo(() => {
     return session.questionIds
-      .map((id) => getQuestionById(id))
+      .map((id) => getQuestionById(id, session.certificationExamId))
       .filter((question): question is Question => question !== undefined)
   }, [session])
 
@@ -80,7 +83,7 @@ export function QuizPage() {
     }
   }
 
-  const finishQuiz = () => {
+  const finishQuiz = async () => {
     const finishedAt = new Date().toISOString()
     const completedSession: QuizSession = {
       ...session,
@@ -88,13 +91,14 @@ export function QuizPage() {
       finishedAt,
     }
     setSession(completedSession)
-    navigate('/results', { state: { attempt: completedSession } })
+    const attemptResult = await createAttemptResult(completedSession)
+    navigate('/results', { state: { attempt: attemptResult } })
   }
 
-  const handleFinishRequest = () => {
+  const handleFinishRequest = async () => {
     const pending = countPendingAnswers(session)
     if (pending === 0) {
-      finishQuiz()
+      await finishQuiz()
     } else {
       setShowFinishConfirmation(true)
     }

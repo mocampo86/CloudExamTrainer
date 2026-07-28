@@ -1,6 +1,7 @@
 [
   {
     "id": "sec001",
+    "certificationExamId": "saa-c03",
     "topic": "Security",
     "difficulty": "easy",
     "type": "single_choice",
@@ -14,6 +15,7 @@
     "explanation": "Azure Web Application Firewall (WAF) protects web apps from common exploits like SQL injection."
   },
   {
+    "certificationExamId": "saa-c03",
     "id": "sec002",
     "topic": "Security",
     "difficulty": "medium",

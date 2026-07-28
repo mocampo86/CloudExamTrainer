@@ -1,22 +1,9 @@
+import { useState } from 'react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { ResultSummary } from '@/components/ResultSummary'
-import { calculateQuizResult, calculateTopicResults } from '@/services/scoringService'
-import { createQuizSession, getQuestionById } from '@/services/questionService'
+import { getQuestionById, startQuizSession } from '@/services/questionService'
 import type { Question } from '@/models/Question'
-import type { QuizSession } from '@/models/QuizSession'
-
-function getRecommendations(percentage: number): string[] {
-  if (percentage >= 85) {
-    return ['¡Excelente desempeño! Continúa practicando para mantener el nivel.']
-  }
-  if (percentage >= 70) {
-    return ['Buen nivel. Refuerza los temas con menor puntuación.']
-  }
-  if (percentage >= 50) {
-    return ['Necesitas repasar. Prioriza los temas marcados como "Requiere atención".']
-  }
-  return ['Desempeño bajo. Estudia los conceptos fundamentales antes de continuar.']
-}
+import type { QuizAttemptResult } from '@/models/QuizAttemptResult'
 
 function getHeaderMessage(percentage: number): string {
   if (percentage >= 85) {
@@ -29,20 +16,6 @@ function getHeaderMessage(percentage: number): string {
     return 'Sigue adelante, puedes lograrlo.'
   }
   return 'No te rindas, repasa los conceptos fundamentales.'
-}
-
-function formatDuration(startedAt: string, finishedAt?: string): string | undefined {
-  if (!finishedAt) return undefined
-
-  const diff = Math.max(0, new Date(finishedAt).getTime() - new Date(startedAt).getTime())
-  const totalSeconds = Math.floor(diff / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-
-  if (minutes > 0) {
-    return `${minutes} min ${seconds} s`
-  }
-  return `${seconds} s`
 }
 
 function isQuestionCorrect(question: Question, selectedAnswerIds: string[]): boolean {
@@ -64,7 +37,8 @@ function getAnswerText(question: Question, answerIds: string[]): string {
 export function ResultsPage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const attempt = (location.state as { attempt?: QuizSession } | undefined)?.attempt
+  const attempt = (location.state as { attempt?: QuizAttemptResult } | undefined)?.attempt
+  const [retryError, setRetryError] = useState<string | null>(null)
 
   if (!attempt) {
     return (
@@ -78,22 +52,28 @@ export function ResultsPage() {
     )
   }
 
-  const questions: Question[] = attempt.questionIds
-    .map((id) => getQuestionById(id))
+  const { session, certification, result, topicResults, recommendations, duration } = attempt
+
+  const questions: Question[] = session.questionIds
+    .map((id) => getQuestionById(id, session.certificationExamId))
     .filter((question): question is Question => question !== undefined)
 
-  const quizResult = calculateQuizResult(questions, attempt.answers)
-  const topicResults = calculateTopicResults(questions, attempt.answers)
-  const recommendations = getRecommendations(quizResult.percentage)
-  const headerMessage = getHeaderMessage(quizResult.percentage)
-  const duration = formatDuration(attempt.startedAt, attempt.finishedAt)
+  const headerMessage = getHeaderMessage(result.percentage)
 
-  const handleRetry = () => {
-    const newSession = createQuizSession({
-      topic: attempt.topic,
-      count: attempt.questionIds.length,
+  const handleRetry = async () => {
+    setRetryError(null)
+    const response = await startQuizSession({
+      certificationExamId: session.certificationExamId,
+      topic: session.topic,
+      count: session.questionIds.length,
     })
-    navigate('/quiz', { state: { session: newSession } })
+
+    if (response.status !== 200) {
+      setRetryError(response.body.error)
+      return
+    }
+
+    navigate('/quiz', { state: { session: response.body } })
   }
 
   const handleGoHome = () => {
@@ -107,7 +87,18 @@ export function ResultsPage() {
         <p className="page-header__description">{headerMessage}</p>
       </header>
 
-      <ResultSummary result={quizResult} topic={attempt.topic} duration={duration} />
+      {retryError && (
+        <p className="error-message" role="alert">
+          {retryError}
+        </p>
+      )}
+
+      <ResultSummary
+        result={result}
+        topic={session.topic}
+        duration={duration}
+        certification={certification}
+      />
 
       <section aria-label="Resultados por tema" className="results-section">
         <h2 className="results-section__title">Desempeño por tema</h2>
@@ -137,7 +128,7 @@ export function ResultsPage() {
         <h2 className="results-section__title">Revisión de respuestas</h2>
         <ol className="answer-list">
           {questions.map((question, index) => {
-            const selectedAnswerIds = attempt.answers[question.id] ?? []
+            const selectedAnswerIds = session.answers[question.id] ?? []
             const correct = isQuestionCorrect(question, selectedAnswerIds)
             const selectedText = getAnswerText(question, selectedAnswerIds)
             const correctText = getAnswerText(question, question.correctAnswers)

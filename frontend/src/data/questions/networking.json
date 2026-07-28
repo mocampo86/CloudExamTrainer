@@ -1,6 +1,7 @@
 [
   {
     "id": "net001",
+    "certificationExamId": "saa-c03",
     "topic": "Networking",
     "difficulty": "easy",
     "type": "single_choice",

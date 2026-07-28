@@ -1,6 +1,7 @@
 [
   {
     "id": "cmp001",
+    "certificationExamId": "saa-c03",
     "topic": "Compute",
     "difficulty": "easy",
     "type": "single_choice",

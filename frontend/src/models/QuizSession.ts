@@ -3,6 +3,7 @@ export type QuizSessionStatus = 'not_started' | 'in_progress' | 'completed'
 export interface QuizSession {
   id: string
   topic: string
+  certificationExamId: string
   questionIds: string[]
   currentIndex: number
   answers: Record<string, string[]>
@@ -19,10 +20,15 @@ function generateSessionId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
 }
 
-export function createQuizSession(topic: string, questionIds: string[]): QuizSession {
+export function createQuizSession(
+  topic: string,
+  questionIds: string[],
+  certificationExamId: string,
+): QuizSession {
   return {
     id: generateSessionId(),
     topic,
+    certificationExamId,
     questionIds,
     currentIndex: 0,
     answers: {},

@@ -5,10 +5,10 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './router'
 
 describe('App navigation', () => {
-  it('renders the home page by default', () => {
+  it('renders the home page by default', async () => {
     const testRouter = createMemoryRouter(routes, { initialEntries: ['/'] })
     render(<RouterProvider router={testRouter} />)
-    expect(screen.getByText('Cloud Exam Trainer')).toBeInTheDocument()
+    expect(await screen.findByText('Cloud Exam Trainer')).toBeInTheDocument()
   })
 
   it('navigates to the quiz page without reloading', async () => {

@@ -4,6 +4,7 @@ import { calculateQuizResult, calculateTopicResults } from './scoringService'
 
 const singleChoiceQuestion: Question = {
   id: 'q1',
+  certificationExamId: 'saa-c03',
   topic: 'Security',
   difficulty: 'easy',
   type: 'single_choice',
@@ -15,6 +16,7 @@ const singleChoiceQuestion: Question = {
 
 const multipleChoiceQuestion: Question = {
   id: 'q2',
+  certificationExamId: 'saa-c03',
   topic: 'Compute',
   difficulty: 'medium',
   type: 'multiple_choice',

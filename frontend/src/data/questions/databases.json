@@ -1,6 +1,7 @@
 [
   {
     "id": "db001",
+    "certificationExamId": "saa-c03",
     "topic": "Databases",
     "difficulty": "easy",
     "type": "multiple_choice",

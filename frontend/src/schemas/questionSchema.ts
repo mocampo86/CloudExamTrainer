@@ -7,6 +7,7 @@ export const questionOptionSchema = z.object({
 
 export const questionSchema = z.object({
   id: z.string().min(1),
+  certificationExamId: z.string().min(1),
   topic: z.string().min(1),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   type: z.enum(['single_choice', 'multiple_choice']),
@@ -57,17 +58,18 @@ export const questionSchema = z.object({
 })
 
 export const questionsSchema = z.array(questionSchema).superRefine((questions, ctx) => {
-  const ids = new Set<string>()
+  const keys = new Set<string>()
 
   questions.forEach((q, i) => {
-    if (ids.has(q.id)) {
+    const key = `${q.certificationExamId}:${q.id}`
+    if (keys.has(key)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `duplicate question id "${q.id}"`,
+        message: `duplicate question id "${q.id}" within certification "${q.certificationExamId}"`,
         path: [i, 'id'],
       })
     } else {
-      ids.add(q.id)
+      keys.add(key)
     }
   })
 })

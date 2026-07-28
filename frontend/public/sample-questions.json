@@ -1,6 +1,7 @@
 [
   {
     "id": "q001",
+    "certificationExamId": "saa-c03",
     "topic": "Azure Compute",
     "difficulty": "easy",
     "type": "single_choice",
@@ -14,6 +15,7 @@
     "explanation": "Azure Container Instances runs containers without requiring server management."
   },
   {
+    "certificationExamId": "saa-c03",
     "id": "q002",
     "topic": "Azure Storage",
     "difficulty": "medium",

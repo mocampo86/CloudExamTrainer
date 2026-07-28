@@ -1,12 +1,14 @@
+import type { CertificationSummary } from '@/models/QuizAttemptResult'
 import type { QuizResult } from '@/models/QuizResult'
 
 interface ResultSummaryProps {
   result: QuizResult
   topic?: string
   duration?: string
+  certification?: CertificationSummary
 }
 
-export function ResultSummary({ result, topic, duration }: ResultSummaryProps) {
+export function ResultSummary({ result, topic, duration, certification }: ResultSummaryProps) {
   const { correctCount, incorrectCount, percentage, totalQuestions } = result
 
   return (
@@ -32,6 +34,11 @@ export function ResultSummary({ result, topic, duration }: ResultSummaryProps) {
       </div>
 
       <div className="result-grid">
+        {certification && (
+          <p className="result-summary__certification">
+            Certificación: <strong>{certification.provider.name} — {certification.name}</strong>
+          </p>
+        )}
         <p>
           Puntaje: <strong>{correctCount} de {totalQuestions}</strong>
         </p>

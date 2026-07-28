@@ -9,6 +9,8 @@ export interface QuestionOption {
 
 export interface Question {
   id: string
+  /** Reference to the certification exam this question belongs to. */
+  certificationExamId: string
   topic: string
   difficulty: QuestionDifficulty
   type: QuestionType

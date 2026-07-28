@@ -1,0 +1,519 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cloud Exam Trainer API",
+    "description": "API for managing certifications, questions and quizzes.",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Local static API"
+    }
+  ],
+  "paths": {
+    "/certifications": {
+      "get": {
+        "summary": "List available certifications",
+        "description": "Returns all active certifications ordered by name ascending.",
+        "operationId": "getCertifications",
+        "responses": {
+          "200": {
+            "description": "List of active certifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CertificationListItemDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/certifications/{id}": {
+      "get": {
+        "summary": "Get certification by id",
+        "description": "Returns an active certification by its identifier.",
+        "operationId": "getCertificationById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certification detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificationDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid identifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certification not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/certifications/code/{code}": {
+      "get": {
+        "summary": "Get certification by code",
+        "description": "Returns an active certification by its unique code.",
+        "operationId": "getCertificationByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certification detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificationDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certification not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quiz-sessions": {
+      "post": {
+        "summary": "Start a quiz session",
+        "description": "Creates a quiz session for the selected certification and optional topic. Validates that the certification exists and is active and that the topic belongs to the certification when provided.",
+        "operationId": "startQuizSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartQuizSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quiz session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizSessionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certification not found or inactive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Topic does not belong to the certification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error or not enough questions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attempt-results": {
+      "post": {
+        "summary": "Create an attempt result",
+        "description": "Creates a result for a completed quiz session. The certification is resolved from the validated source and cannot be altered by the caller.",
+        "operationId": "createAttemptResult",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuizSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attempt result created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid session or missing certification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certification not found or inactive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProviderSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "CertificationListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderSummaryDto"
+          }
+        },
+        "required": ["id", "code", "name", "description", "version", "difficulty", "imageUrl", "isActive", "provider"]
+      },
+      "CertificationDetailDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CertificationListItemDto"
+          }
+        ]
+      },
+      "StartQuizSessionRequest": {
+        "type": "object",
+        "properties": {
+          "certificationExamId": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": ["certificationExamId", "count"]
+      },
+      "QuizSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string"
+          },
+          "certificationExamId": {
+            "type": "string"
+          },
+          "questionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "currentIndex": {
+            "type": "integer"
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "in_progress", "completed"]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "topic", "certificationExamId", "questionIds", "currentIndex", "answers", "status", "startedAt"]
+      },
+      "TopicResultDto": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "correctCount": {
+            "type": "integer"
+          },
+          "totalQuestions": {
+            "type": "integer"
+          },
+          "percentage": {
+            "type": "integer"
+          },
+          "classification": {
+            "type": "string",
+            "enum": ["high_attention", "needs_review", "good_level", "mastered"]
+          }
+        },
+        "required": ["topic", "correctCount", "totalQuestions", "percentage", "classification"]
+      },
+      "QuizResultDto": {
+        "type": "object",
+        "properties": {
+          "correctCount": {
+            "type": "integer"
+          },
+          "incorrectCount": {
+            "type": "integer"
+          },
+          "percentage": {
+            "type": "integer"
+          },
+          "totalQuestions": {
+            "type": "integer"
+          }
+        },
+        "required": ["correctCount", "incorrectCount", "percentage", "totalQuestions"]
+      },
+      "CertificationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderSummaryDto"
+          }
+        },
+        "required": ["id", "code", "name", "provider"]
+      },
+      "AttemptResultDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "session": {
+            "$ref": "#/components/schemas/QuizSessionDto"
+          },
+          "certification": {
+            "$ref": "#/components/schemas/CertificationSummaryDto"
+          },
+          "result": {
+            "$ref": "#/components/schemas/QuizResultDto"
+          },
+          "topicResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopicResultDto"
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "session", "certification", "result", "topicResults", "recommendations", "startedAt", "finishedAt"]
+      },
+      "ErrorDto": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}

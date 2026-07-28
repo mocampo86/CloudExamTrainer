@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from '@/app/router'
+import type { QuizAttemptResult } from '@/models/QuizAttemptResult'
 import type { QuizSession } from '@/models/QuizSession'
 
 function renderWithSession(session: QuizSession) {
@@ -16,6 +17,7 @@ function renderWithSession(session: QuizSession) {
 const testSession: QuizSession = {
   id: 'test-session',
   topic: 'Mixed',
+  certificationExamId: 'saa-c03',
   questionIds: ['sec001', 'db001'],
   currentIndex: 0,
   answers: {},
@@ -111,18 +113,20 @@ describe('QuizPage', () => {
 
     await user.click(screen.getByRole('button', { name: /finalizar$/i }))
 
-    expect(router.state.location.pathname).toBe('/results')
+    await waitFor(() => expect(router.state.location.pathname).toBe('/results'))
 
-    const state = router.state.location.state as { attempt: QuizSession } | undefined
-    expect(state?.attempt.status).toBe('completed')
-    expect(state?.attempt.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
-    expect(state?.attempt.startedAt).toBe(testSession.startedAt)
-    expect(state?.attempt.topic).toBe('Mixed')
-    expect(state?.attempt.questionIds).toEqual(['sec001', 'db001'])
-    expect(state?.attempt.answers).toEqual({
+    const state = router.state.location.state as { attempt: QuizAttemptResult } | undefined
+    expect(state?.attempt.session.status).toBe('completed')
+    expect(state?.attempt.session.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+    expect(state?.attempt.session.startedAt).toBe(testSession.startedAt)
+    expect(state?.attempt.session.topic).toBe('Mixed')
+    expect(state?.attempt.session.questionIds).toEqual(['sec001', 'db001'])
+    expect(state?.attempt.session.answers).toEqual({
       sec001: ['opt2'],
       db001: ['opt1', 'opt2'],
     })
+    expect(state?.attempt.certification.id).toBe('saa-c03')
+    expect(state?.attempt.result.totalQuestions).toBe(2)
   })
 
   it('confirms finishing when there are pending questions and navigates to results', async () => {
@@ -131,11 +135,12 @@ describe('QuizPage', () => {
     await user.click(screen.getByRole('button', { name: /finalizar$/i }))
     await user.click(screen.getByRole('button', { name: /confirmar y finalizar/i }))
 
-    expect(router.state.location.pathname).toBe('/results')
+    await waitFor(() => expect(router.state.location.pathname).toBe('/results'))
 
-    const state = router.state.location.state as { attempt: QuizSession } | undefined
-    expect(state?.attempt.status).toBe('completed')
-    expect(state?.attempt.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
-    expect(state?.attempt.answers).toEqual({})
+    const state = router.state.location.state as { attempt: QuizAttemptResult } | undefined
+    expect(state?.attempt.session.status).toBe('completed')
+    expect(state?.attempt.session.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+    expect(state?.attempt.session.answers).toEqual({})
+    expect(state?.attempt.certification.id).toBe('saa-c03')
   })
 })

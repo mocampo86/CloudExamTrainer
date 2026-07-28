@@ -1,0 +1,28 @@
+
+> frontend@0.0.0 test
+> vitest run --no-color
+
+
+ RUN  v4.1.10 C:/Endava/EndevLocal/source/CloudExamTrainer/frontend
+
+ ✓ src/schemas/providerSchema.test.ts (3 tests) 12ms
+ ✓ src/services/certificationService.test.ts (6 tests) 10ms
+ ✓ src/api/certifications.test.ts (7 tests) 9ms
+ ✓ src/services/scoringService.test.ts (13 tests) 97ms
+ ✓ src/schemas/certificationExamSchema.test.ts (5 tests) 11ms
+ ✓ src/utils/questionValidation.test.ts (14 tests) 46ms
+ ✓ src/services/resultService.test.ts (4 tests) 16ms
+ ✓ src/services/questionService.test.ts (22 tests) 60ms
+ ✓ src/app/App.test.tsx (3 tests) 460ms
+     ✓ navigates to the quiz page without reloading  338ms
+ ✓ src/pages/ResultsPage.test.tsx (7 tests) 531ms
+     ✓ shows a message when there is no attempt  301ms
+ ✓ src/pages/HomePage.test.tsx (10 tests) 1154ms
+     ✓ creates a session and navigates to the quiz page with a valid configuration  584ms
+ ✓ src/pages/QuizPage.test.tsx (10 tests) 1306ms
+
+ Test Files  12 passed (12)
+      Tests  104 passed (104)
+   Start at  23:48:15
+   Duration  44.44s (transform 19.42s, setup 77.09s, import 26.03s, tests 3.71s, environment 350.37s)
+

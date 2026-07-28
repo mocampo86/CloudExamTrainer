@@ -1,6 +1,7 @@
 [
   {
     "id": "sto001",
+    "certificationExamId": "saa-c03",
     "topic": "Storage",
     "difficulty": "easy",
     "type": "single_choice",

@@ -1,6 +1,7 @@
 [
   {
     "id": "q001",
+    "certificationExamId": "saa-c03",
     "topic": "Compute",
     "difficulty": "easy",
     "type": "single_choice",
@@ -13,6 +14,7 @@
     "explanation": "Explanation text."
   },
   {
+    "certificationExamId": "saa-c03",
     "id": "q001",
     "topic": "Storage",
     "difficulty": "easy",
