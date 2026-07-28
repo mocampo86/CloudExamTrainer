@@ -73,4 +73,4 @@ Los resultados históricos que carecían de certificación se asocian a `AWS Cer
 
 ## Especificación OpenAPI
 
-La especificación completa se encuentra en `public/openapi.json`.
+La especificación completa se encuentra en `frontend/public/openapi.json`.

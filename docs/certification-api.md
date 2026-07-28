@@ -64,4 +64,4 @@ El contrato es genérico y no asume que todas las certificaciones pertenecen a A
 
 ## Especificación OpenAPI
 
-La especificación completa se encuentra en `public/openapi.json`.
+La especificación completa se encuentra en `frontend/public/openapi.json`.

@@ -1,12 +1,13 @@
 # Formato de preguntas
 
-El archivo de preguntas es un JSON que contiene un array de objetos `Question`.
+El archivo de preguntas es un JSON que contiene un array de objetos `Question`. Cada pregunta pertenece a un examen de certificación identificado por `certificationExamId`.
 
 ## Estructura
 
 | Propiedad        | Tipo      | Descripción                                                    |
 | ---------------- | --------- | -------------------------------------------------------------- |
 | `id`             | `string`  | Identificador único de la pregunta.                            |
+| `certificationExamId` | `string`  | Identificador del examen de certificación al que pertenece.    |
 | `topic`          | `string`  | Tema al que pertenece la pregunta.                             |
 | `difficulty`     | `string`  | Dificultad: `easy`, `medium` o `hard`.                         |
 | `type`           | `string`  | Tipo: `single_choice` o `multiple_choice`.                     |
@@ -28,6 +29,7 @@ El archivo de preguntas es un JSON que contiene un array de objetos `Question`.
 [
   {
     "id": "q001",
+    "certificationExamId": "saa-c03",
     "topic": "Azure Compute",
     "difficulty": "easy",
     "type": "single_choice",

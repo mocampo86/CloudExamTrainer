@@ -59,4 +59,4 @@ Crea una nueva sesión de cuestionario para una certificación y un tema opciona
 
 ## Especificación OpenAPI
 
-La especificación completa se encuentra en `public/openapi.json`.
+La especificación completa se encuentra en `frontend/public/openapi.json`.
