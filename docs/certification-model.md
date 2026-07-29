@@ -35,6 +35,8 @@ Representa un examen de certificación ofrecido por un proveedor.
 
 Representa un dominio de examen dentro de una certificación. Permite clasificar las preguntas según la estructura oficial o funcional del examen sin acoplar el modelo a un proveedor específico.
 
+> **Estado actual:** el modelo y el esquema están definidos, pero aún no existen datos de dominios configurados. El campo `examDomainId` de `QuestionBank` es opcional y no se utiliza en el contenido migrado actual.
+
 | Propiedad           | Tipo    | Descripción                                                   |
 | ------------------- | ------- | ------------------------------------------------------------- |
 | `id`                | string  | Identificador único del dominio.                              |
@@ -48,6 +50,8 @@ Representa un dominio de examen dentro de una certificación. Permite clasificar
 ### Topic
 
 Representa un tema dentro de un examen de certificación.
+
+> **Estado actual:** el modelo existe como contrato, pero no hay un archivo de temas configurados. Los temas disponibles se derivan del campo `topicId` de las preguntas migradas desde el formato legacy. En el contenido actual, `topicId` coincide con el nombre del tema y se utiliza para filtrar cuestionarios.
 
 | Propiedad           | Tipo   | Descripción                                     |
 | ------------------- | ------ | ----------------------------------------------- |
@@ -70,6 +74,8 @@ Representa una etiqueta global que puede reutilizarse entre certificaciones para
 ### QuestionTag
 
 Representa la relación many-to-many entre una pregunta y una etiqueta. Eliminar esta relación no elimina la pregunta ni la etiqueta.
+
+> **Implementación actual:** en el MVP la relación se modela directamente mediante el campo `tagIds: string[]` dentro de `QuestionBank`. El modelo `QuestionTag` documenta el contrato conceptual y se valida mediante `questionTagSchema` cuando se manejan relaciones explícitas.
 
 | Propiedad  | Tipo   | Descripción                          |
 | ---------- | ------ | ------------------------------------ |
@@ -167,7 +173,13 @@ Representa una referencia externa asociada a una pregunta, como documentación o
 - `frontend/src/services/certificationService.ts`
 - `frontend/src/services/questionService.ts`
 - `frontend/src/services/questionBankMigration.ts`
+- `frontend/src/services/questionBankContentMigration.ts`
+- `frontend/src/services/questionAdminService.ts`
 - `frontend/src/api/certifications.ts`
+- `frontend/src/api/questions.ts`
+- `frontend/src/models/CreateQuestionCommand.ts`
+- `frontend/src/models/CreateQuestionResponse.ts`
+- `frontend/src/schemas/createQuestionCommandSchema.ts`
 
 ## Formato JSON
 

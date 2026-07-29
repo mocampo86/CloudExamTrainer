@@ -62,6 +62,11 @@ El recurso se identifica preferentemente por `id` en la ruta `/api/certification
 
 El contrato es genérico y no asume que todas las certificaciones pertenecen a AWS. Está preparado para Azure, Google Cloud u otros proveedores.
 
+## APIs relacionadas
+
+- **Administración de preguntas (creación)**: `docs/questions-api.md`
+  - `POST /api/questions` (US-032)
+
 ## Especificación OpenAPI
 
 La especificación completa se encuentra en `frontend/public/openapi.json`.

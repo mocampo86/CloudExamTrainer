@@ -79,7 +79,10 @@ Sirve localmente la versión compilada.
   - `src/components/`: componentes reutilizables.
   - `src/pages/`: páginas de la aplicación.
   - `src/models/`: tipos y modelos de dominio.
-  - `src/services/`: lógica de servicios.
-  - `src/data/`: datos estáticos (por ejemplo, JSON de preguntas).
+  - `src/schemas/`: esquemas Zod para validación.
+  - `src/services/`: lógica de servicios (certificaciones, cuestionarios, resultados, administración de preguntas, migraciones).
+  - `src/api/`: adaptadores de endpoints (`certifications.ts`, `questions.ts`).
+  - `src/data/`: datos estáticos (certificaciones y JSON de preguntas).
   - `src/utils/`: funciones utilitarias.
   - `src/styles/`: estilos globales.
+- `docs/`: documentación del modelo, APIs y arquitectura.

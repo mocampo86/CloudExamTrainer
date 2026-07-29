@@ -28,6 +28,8 @@ El contrato del dominio se define en `docs/certification-model.md` y se implemen
 - `frontend/src/models/QuestionBank.ts`
 - `frontend/src/models/AnswerOption.ts`
 - `frontend/src/models/QuestionReference.ts`
+- `frontend/src/models/CreateQuestionCommand.ts`
+- `frontend/src/models/CreateQuestionResponse.ts`
 
 Relaciones principales:
 
@@ -36,8 +38,10 @@ Relaciones principales:
 - Cada `ExamDomain`, cada `Topic` y cada `QuestionBank` pertenecen a exactamente un `CertificationExam`.
 - Un `QuestionBank` puede referenciar opcionalmente un `ExamDomain` y un `Topic` de la misma certificación.
 - Un `QuestionBank` tiene muchos `AnswerOption` y muchos `QuestionReference`.
-- Un `QuestionBank` tiene muchas `Tag` a través de `QuestionTag`.
+- Un `QuestionBank` tiene muchas `Tag` a través de `QuestionTag`. En el MVP la relación se implementa mediante `tagIds: string[]` dentro de `QuestionBank`.
 - `Tag` es global y puede reutilizarse entre certificaciones.
+
+> **Nota sobre datos actuales:** los modelos `ExamDomain` y `Topic` están definidos, pero aún no existen archivos de datos separados. Los temas disponibles para cuestionarios se derivan del campo `topicId` de las preguntas migradas. Los dominios están preparados para futuro contenido.
 
 ## Flujo de datos
 
@@ -75,6 +79,14 @@ POST /api/attempt-results (createAttemptResult)
    │
    ▼
 ResultsPage (muestra certificación, puntaje y desempeño por tema)
+
+POST /api/questions (createQuestion)
+   │
+   ├─ valida comando con createQuestionCommandSchema
+   ├─ valida que la certificación exista y esté activa
+   ├─ genera identificador, timestamps y opciones
+   ├─ valida topic/domain contra la certificación
+   └─ persiste en memoria y devuelve CreateQuestionResponse
 ```
 
 ## APIs
@@ -87,6 +99,8 @@ ResultsPage (muestra certificación, puntaje y desempeño por tema)
   - `POST /api/quiz-sessions`
 - **Resultados**: `docs/result-api.md`
   - `POST /api/attempt-results`
+- **Preguntas (creación)**: `docs/questions-api.md`
+  - `POST /api/questions` (US-032)
 
 La especificación OpenAPI completa se encuentra en `frontend/public/openapi.json`.
 
@@ -97,7 +111,7 @@ La especificación OpenAPI completa se encuentra en `frontend/public/openapi.jso
 | Modelos | Contratos TypeScript | `frontend/src/models/*.ts` |
 | Esquemas | Validación Zod | `frontend/src/schemas/*Schema.ts` |
 | Datos | Contenido estático versionado | `frontend/src/data/certifications/index.ts`, `frontend/src/data/questionBanks/questionBanks.json` |
-| Servicios | Lógica de negocio y mapeo a DTOs | `frontend/src/services/certificationService.ts`, `frontend/src/services/questionService.ts`, `frontend/src/services/resultService.ts` |
+| Servicios | Lógica de negocio y mapeo a DTOs | `frontend/src/services/certificationService.ts`, `frontend/src/services/questionService.ts`, `frontend/src/services/resultService.ts`, `frontend/src/services/questionAdminService.ts`, `frontend/src/services/questionBankMigration.ts`, `frontend/src/services/questionBankContentMigration.ts` |
 | API | Adaptadores de endpoints | `frontend/src/api/certifications.ts` |
 | Páginas | UI y flujo de usuario | `frontend/src/pages/HomePage.tsx`, `frontend/src/pages/QuizPage.tsx`, `frontend/src/pages/ResultsPage.tsx` |
 
@@ -113,7 +127,8 @@ Para agregar una nueva certificación:
 2. Añadir el examen en `frontend/src/data/certifications/index.ts`.
 3. Añadir los dominios de examen en `frontend/src/data/certifications/index.ts` o en el banco de datos correspondiente.
 4. Asegurar que las preguntas en `frontend/src/data/questionBanks/questionBanks.json` incluyan el `certificationExamId` correspondiente y referencien dominios y temas válidos.
-5. No se requieren cambios en componentes, servicios ni lógica de cuestionario.
+5. Las nuevas preguntas también pueden crearse mediante `POST /api/questions`, validadas por `questionAdminService.ts` y almacenadas en memoria durante la ejecución.
+6. No se requieren cambios en componentes, servicios ni lógica de cuestionario.
 
 ## Alcance actual
 
@@ -121,4 +136,5 @@ Para agregar una nueva certificación:
 - La arquitectura está preparada para múltiples certificaciones.
 - El banco de preguntas se implementa como JSON estático validado con Zod en el frontend, siguiendo las reglas de arquitectura del MVP que no incluyen backend ni base de datos.
 - Los contenidos legacy en `frontend/src/data/questions/*.json` pueden migrarse a `frontend/src/data/questionBanks/questionBanks.json` mediante `frontend/scripts/migrateQuestionBankContent.ts`.
-- No se implementa panel administrativo ni endpoints de escritura.
+- El endpoint `POST /api/questions` permite crear preguntas en memoria acorde al alcance del MVP.
+- No se implementa panel administrativo ni endpoints de escritura completos.
