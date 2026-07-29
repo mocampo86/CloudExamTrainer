@@ -2,6 +2,8 @@
 
 Esta API expone las operaciones de gestión del banco de preguntas. En el MVP la persistencia se implementa en memoria sobre el mismo archivo JSON estático que consume el cuestionario, siguiendo las reglas de arquitectura que no incluyen backend ni base de datos.
 
+La **Feature 01.10 - Persistencia PostgreSQL del banco de preguntas** define el reemplazo progresivo de la persistencia en memoria por PostgreSQL (post-MVP), manteniendo los mismos contratos HTTP.
+
 > **Alcance actual:** solo está implementado el endpoint de creación (`POST /api/questions`, US-032). Las operaciones de edición, consulta por ID, listado paginado, filtros, activación/desactivación, eliminación lógica y duplicado se mantienen en backlog.
 
 ## Endpoints
@@ -97,14 +99,21 @@ Crea una nueva pregunta en el banco de preguntas.
 5. Se genera un identificador único y los timestamps en formato ISO 8601.
 6. Se construye la entidad `QuestionBank` y se revalida con `questionBankSchema`.
 7. Se valida la unicidad del `externalCode` y la pertenencia de `topicId`/`examDomainId`.
-8. Se persiste la pregunta en memoria y se devuelve la respuesta.
+8. Se persiste la pregunta en memoria (MVP) o en el repositorio PostgreSQL (Feature 01.10) y se devuelve la respuesta.
 
 ## Alcance actual
 
 - Se soporta la creación de preguntas de tipo `single_choice` y `multiple_choice`.
-- La persistencia es en memoria durante la ejecución, acorde al MVP.
+- La persistencia es en memoria durante la ejecución, acorde al MVP. En el futuro se utilizará PostgreSQL a través de un repositorio dedicado.
 - No se implementan edición, eliminación, listado, filtros ni paginación en este endpoint.
 - No se almacenan imágenes ni archivos adjuntos.
+
+## Hoja de ruta de persistencia
+
+- **MVP:** persistencia en memoria basada en `frontend/src/data/questionBanks/questionBanks.json`.
+- **Feature 01.10:** persistencia en PostgreSQL mediante EF Core + Npgsql y un repositorio `IQuestionRepository`.
+- El JSON existente sigue siendo el formato de entrada y la semilla para la migración a PostgreSQL.
+- El contrato `CreateQuestionRequest` / `CreateQuestionResponse` no cambia.
 
 ## Archivos relevantes
 

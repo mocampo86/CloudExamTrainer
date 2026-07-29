@@ -4,6 +4,8 @@ El archivo de preguntas actual es un JSON que contiene un array de objetos `Ques
 
 La ruta del archivo es `frontend/src/data/questionBanks/questionBanks.json`. El contenido legacy en `frontend/src/data/questions/*.json` sigue el formato antiguo descrito en la sección [Formato legacy](#formato-legacy).
 
+> **Nota sobre persistencia:** el formato JSON es el origen de datos del MVP y la semilla de migración hacia PostgreSQL. La **Feature 01.10 - Persistencia PostgreSQL del banco de preguntas** utilizará este mismo esquema para cargar el contenido en tablas relacionales sin modificar el contrato del archivo.
+
 ## Estructura QuestionBank
 
 | Propiedad           | Tipo                              | Descripción                                                    |

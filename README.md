@@ -62,6 +62,38 @@ npm run preview
 
 Sirve localmente la versión compilada.
 
+## Desarrollo con Docker
+
+Requiere Docker y Docker Compose.
+
+```bash
+# Levantar frontend con hot-reload
+docker compose up --build
+```
+
+Abre `http://localhost:5173`.
+
+Para levantar también PostgreSQL (preparado para la Feature 01.10):
+
+```bash
+docker compose --profile db up --build
+```
+
+Ejecutar pruebas o lint dentro del contenedor:
+
+```bash
+docker compose exec frontend npm run test
+docker compose exec frontend npm run lint
+```
+
+Detener:
+
+```bash
+docker compose down
+```
+
+Las variables de entorno se leen desde `.env` (ver `.env.example`).
+
 ## Comandos disponibles
 
 - `npm run dev`: inicia el servidor de desarrollo.
@@ -71,6 +103,15 @@ Sirve localmente la versión compilada.
 - `npm run test`: ejecuta las pruebas con Vitest.
 - `npm run test:watch`: ejecuta las pruebas en modo observador.
 - `npm run validate:questions`: valida el formato del JSON de preguntas.
+
+## Variables de entorno
+
+- `NODE_ENV`: entorno de ejecución (`development` | `production`).
+- `VITE_*`: variables expuestas al frontend por Vite.
+- `DATABASE_URL`: cadena de conexión a PostgreSQL (Feature 01.10).
+- `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: configuración del contenedor de PostgreSQL (Feature 01.10).
+
+Copia `.env.example` a `.env` y ajusta los valores.
 
 ## Estructura
 

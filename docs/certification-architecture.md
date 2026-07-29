@@ -86,7 +86,7 @@ POST /api/questions (createQuestion)
    ├─ valida que la certificación exista y esté activa
    ├─ genera identificador, timestamps y opciones
    ├─ valida topic/domain contra la certificación
-   └─ persiste en memoria y devuelve CreateQuestionResponse
+   └─ persiste en memoria (MVP) o en repositorio PostgreSQL (Feature 01.10) y devuelve CreateQuestionResponse
 ```
 
 ## APIs
@@ -112,12 +112,22 @@ La especificación OpenAPI completa se encuentra en `frontend/public/openapi.jso
 | Esquemas | Validación Zod | `frontend/src/schemas/*Schema.ts` |
 | Datos | Contenido estático versionado | `frontend/src/data/certifications/index.ts`, `frontend/src/data/questionBanks/questionBanks.json` |
 | Servicios | Lógica de negocio y mapeo a DTOs | `frontend/src/services/certificationService.ts`, `frontend/src/services/questionService.ts`, `frontend/src/services/resultService.ts`, `frontend/src/services/questionAdminService.ts`, `frontend/src/services/questionBankMigration.ts`, `frontend/src/services/questionBankContentMigration.ts` |
+| Repositorio | Acceso a PostgreSQL para preguntas | `Infrastructure/Repositories/PostgreSqlQuestionRepository.ts` (Feature 01.10), `Domain/Repositories/IQuestionRepository.ts` |
 | API | Adaptadores de endpoints | `frontend/src/api/certifications.ts` |
 | Páginas | UI y flujo de usuario | `frontend/src/pages/HomePage.tsx`, `frontend/src/pages/QuizPage.tsx`, `frontend/src/pages/ResultsPage.tsx` |
 
 ## Integración con preguntas
 
 Cada pregunta en `frontend/src/data/questionBanks/questionBanks.json` incluye el campo `certificationExamId` para filtrar el banco de preguntas por certificación. El servicio `questionService.ts` carga y valida el archivo con `questionBankSchema` y lo adapta al formato de cuestionario interno cuando corresponde. Ver `docs/question-format.md`.
+
+### Persistencia en PostgreSQL (Feature 01.10)
+
+En el futuro el banco de preguntas se persistirá en PostgreSQL mediante un `DbContext` y un repositorio `IQuestionRepository`:
+
+- Las tablas `Question`, `AnswerOption`, `Tag`, `QuestionTag` y `QuestionReference` reflejan el modelo `QuestionBank` actual.
+- El repositorio implementa lectura/escritura, listado paginado, filtros y eliminación lógica.
+- El proceso de migración carga `frontend/src/data/questionBanks/questionBanks.json` en PostgreSQL de forma idempotente.
+- El cuestionario seguirá funcionando con JSON mientras el repositorio no esté activo.
 
 ## Extensibilidad
 
@@ -127,7 +137,7 @@ Para agregar una nueva certificación:
 2. Añadir el examen en `frontend/src/data/certifications/index.ts`.
 3. Añadir los dominios de examen en `frontend/src/data/certifications/index.ts` o en el banco de datos correspondiente.
 4. Asegurar que las preguntas en `frontend/src/data/questionBanks/questionBanks.json` incluyan el `certificationExamId` correspondiente y referencien dominios y temas válidos.
-5. Las nuevas preguntas también pueden crearse mediante `POST /api/questions`, validadas por `questionAdminService.ts` y almacenadas en memoria durante la ejecución.
+5. Las nuevas preguntas también pueden crearse mediante `POST /api/questions`, validadas por `questionAdminService.ts` y almacenadas en memoria durante la ejecución (MVP) o en el repositorio PostgreSQL (Feature 01.10).
 6. No se requieren cambios en componentes, servicios ni lógica de cuestionario.
 
 ## Alcance actual
@@ -135,6 +145,14 @@ Para agregar una nueva certificación:
 - Se soporta una única certificación activa inicial: **AWS Certified Solutions Architect - Associate** (`saa-c03`).
 - La arquitectura está preparada para múltiples certificaciones.
 - El banco de preguntas se implementa como JSON estático validado con Zod en el frontend, siguiendo las reglas de arquitectura del MVP que no incluyen backend ni base de datos.
+- La **Feature 01.10 - Persistencia PostgreSQL del banco de preguntas** añadirá el backend/repositorio necesario para persistir preguntas en PostgreSQL (post-MVP).
 - Los contenidos legacy en `frontend/src/data/questions/*.json` pueden migrarse a `frontend/src/data/questionBanks/questionBanks.json` mediante `frontend/scripts/migrateQuestionBankContent.ts`.
 - El endpoint `POST /api/questions` permite crear preguntas en memoria acorde al alcance del MVP.
 - No se implementa panel administrativo ni endpoints de escritura completos.
+
+## Entorno de desarrollo con Docker (Feature 01.11)
+
+- Se contempla un `Dockerfile` multi-etapa para el frontend y un `docker-compose.yml` para levantar el entorno de desarrollo.
+- El contenedor de desarrollo soporta hot-reload y monta el código fuente como volumen.
+- El `docker-compose` incluye un servicio opcional de PostgreSQL para soportar la **Feature 01.10** sin modificar el funcionamiento actual del cuestionario.
+- Ver `README.md` para los comandos de uso.
