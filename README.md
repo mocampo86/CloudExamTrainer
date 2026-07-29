@@ -113,6 +113,37 @@ Las variables de entorno se leen desde `.env` (ver `.env.example`).
 
 Copia `.env.example` a `.env` y ajusta los valores.
 
+## Persistencia
+
+El MVP no utiliza backend ni base de datos; la persistencia se resuelve en el
+frontend mediante el `ApplicationDbContext` (`frontend/src/services/applicationDbContext.ts`).
+
+### Configuración del origen de datos
+
+Las siguientes variables de entorno controlan el contexto de persistencia:
+
+- `VITE_DATA_SOURCE_URL`: origen de datos. Valores soportados:
+  - `memory://default` (desarrollo local, sin persistencia entre recargas)
+  - `localstorage://<namespace>` (persistencia en `localStorage` del navegador)
+- `VITE_DATA_SCHEMA_VERSION`: versión actual del esquema de datos.
+- `VITE_DATA_NAMING_CONVENTION`: `snake_case` (por defecto) o `camelCase`.
+- `VITE_DATA_AUTO_MIGRATE`: `true`/`false`. Por defecto `false` para no aplicar
+  migraciones automáticamente en producción.
+
+### Migraciones y validación de datos
+
+```bash
+# Validar el formato del JSON de preguntas (equivalente a validar el esquema)
+npm run validate:questions
+
+# Migrar contenido legacy al formato actual del banco de preguntas
+npm run migrate:questions
+```
+
+> **Nota:** PostgreSQL y EF Core corresponden a la **Feature 01.10 (post-MVP)**
+> y no se introducen en el MVP actual, siguiendo las reglas de arquitectura del
+> proyecto.
+
 ## Estructura
 
 - `frontend/`: proyecto React + TypeScript + Vite.
