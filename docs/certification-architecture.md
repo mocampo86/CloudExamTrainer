@@ -21,15 +21,23 @@ El contrato del dominio se define en `docs/certification-model.md` y se implemen
 
 - `frontend/src/models/Provider.ts`
 - `frontend/src/models/CertificationExam.ts`
+- `frontend/src/models/ExamDomain.ts`
 - `frontend/src/models/Topic.ts`
-- `frontend/src/models/Question.ts`
+- `frontend/src/models/Tag.ts`
+- `frontend/src/models/QuestionTag.ts`
+- `frontend/src/models/QuestionBank.ts`
+- `frontend/src/models/AnswerOption.ts`
+- `frontend/src/models/QuestionReference.ts`
 
 Relaciones principales:
 
 - Un `Provider` tiene muchos `CertificationExam`.
-- Un `CertificationExam` tiene muchos `Topic` y muchas `Question`.
-- Cada `Question` y cada `Topic` pertenecen a exactamente un `CertificationExam`.
-- `Topic` → `Question` se mantiene a través del campo `topic` de `Question`.
+- Un `CertificationExam` tiene muchos `ExamDomain`, muchos `Topic` y muchas `QuestionBank`.
+- Cada `ExamDomain`, cada `Topic` y cada `QuestionBank` pertenecen a exactamente un `CertificationExam`.
+- Un `QuestionBank` puede referenciar opcionalmente un `ExamDomain` y un `Topic` de la misma certificación.
+- Un `QuestionBank` tiene muchos `AnswerOption` y muchos `QuestionReference`.
+- Un `QuestionBank` tiene muchas `Tag` a través de `QuestionTag`.
+- `Tag` es global y puede reutilizarse entre certificaciones.
 
 ## Flujo de datos
 
@@ -51,7 +59,9 @@ POST /api/quiz-sessions (startQuizSession)
    │
    ├─ valida certificación activa
    ├─ valida que el tema pertenezca a la certificación
-   └─ selecciona preguntas filtradas por certificationExamId y topic
+   ├─ carga QuestionBank desde data/questionBanks/questionBanks.json
+   ├─ filtra preguntas por certificationExamId, status active y topic
+   └─ selecciona questionIds aleatorios
    │
    ▼
 QuizPage (session.certificationExamId)
@@ -60,7 +70,7 @@ QuizPage (session.certificationExamId)
 POST /api/attempt-results (createAttemptResult)
    │
    ├─ resuelve la certificación desde la sesión validada
-   ├─ calcula puntaje y topicResults
+   ├─ carga QuestionBank y calcula puntaje y topicResults
    └─ devuelve QuizAttemptResult con certificationSummary
    │
    ▼
@@ -86,14 +96,14 @@ La especificación OpenAPI completa se encuentra en `frontend/public/openapi.jso
 | ---- | --------------- | ------------------- |
 | Modelos | Contratos TypeScript | `frontend/src/models/*.ts` |
 | Esquemas | Validación Zod | `frontend/src/schemas/*Schema.ts` |
-| Datos | Contenido estático versionado | `frontend/src/data/certifications/index.ts`, `frontend/src/data/questions/*.json` |
+| Datos | Contenido estático versionado | `frontend/src/data/certifications/index.ts`, `frontend/src/data/questionBanks/questionBanks.json` |
 | Servicios | Lógica de negocio y mapeo a DTOs | `frontend/src/services/certificationService.ts`, `frontend/src/services/questionService.ts`, `frontend/src/services/resultService.ts` |
 | API | Adaptadores de endpoints | `frontend/src/api/certifications.ts` |
 | Páginas | UI y flujo de usuario | `frontend/src/pages/HomePage.tsx`, `frontend/src/pages/QuizPage.tsx`, `frontend/src/pages/ResultsPage.tsx` |
 
 ## Integración con preguntas
 
-Cada pregunta en los archivos JSON incluye el campo `certificationExamId` para filtrar el banco de preguntas por certificación. Ver `docs/question-format.md`.
+Cada pregunta en `frontend/src/data/questionBanks/questionBanks.json` incluye el campo `certificationExamId` para filtrar el banco de preguntas por certificación. El servicio `questionService.ts` carga y valida el archivo con `questionBankSchema` y lo adapta al formato de cuestionario interno cuando corresponde. Ver `docs/question-format.md`.
 
 ## Extensibilidad
 
@@ -101,11 +111,14 @@ Para agregar una nueva certificación:
 
 1. Añadir el proveedor en `frontend/src/data/certifications/index.ts` si aún no existe.
 2. Añadir el examen en `frontend/src/data/certifications/index.ts`.
-3. Asegurar que las preguntas y temas asociados incluyan el `certificationExamId` correspondiente.
-4. No se requieren cambios en componentes, servicios ni lógica de cuestionario.
+3. Añadir los dominios de examen en `frontend/src/data/certifications/index.ts` o en el banco de datos correspondiente.
+4. Asegurar que las preguntas en `frontend/src/data/questionBanks/questionBanks.json` incluyan el `certificationExamId` correspondiente y referencien dominios y temas válidos.
+5. No se requieren cambios en componentes, servicios ni lógica de cuestionario.
 
 ## Alcance actual
 
 - Se soporta una única certificación activa inicial: **AWS Certified Solutions Architect - Associate** (`saa-c03`).
 - La arquitectura está preparada para múltiples certificaciones.
-- No se implementan migraciones, panel administrativo, ni endpoints de escritura.
+- El banco de preguntas se implementa como JSON estático validado con Zod en el frontend, siguiendo las reglas de arquitectura del MVP que no incluyen backend ni base de datos.
+- Los contenidos legacy en `frontend/src/data/questions/*.json` pueden migrarse a `frontend/src/data/questionBanks/questionBanks.json` mediante `frontend/scripts/migrateQuestionBankContent.ts`.
+- No se implementa panel administrativo ni endpoints de escritura.
