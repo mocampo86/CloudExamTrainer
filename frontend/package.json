@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "migrate:questions": "tsx --tsconfig tsconfig.app.json scripts/migrateQuestionBankContent.ts",
+    "migrate:postgresql": "tsx --tsconfig tsconfig.app.json scripts/migrateQuestionBankToPostgreSql.ts",
     "validate:questions": "tsx --tsconfig tsconfig.app.json scripts/validateQuestionBanks.ts",
     "test": "vitest run",
     "test:watch": "vitest"

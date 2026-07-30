@@ -122,6 +122,9 @@ export interface IQuestionRepository {
 
   /** Indica si ya existe una pregunta con el codigo externo en la certificacion. */
   existsByExternalCodeAsync(certificationExamId: string, externalCode: string, excludeId?: string): Promise<boolean>
+
+  /** Limpia las preguntas migradas administrativamente, simulando un reset de tabla. */
+  resetAsync(): Promise<void>
 }
 
 const DEFAULT_PAGE_NUMBER = 1
@@ -509,6 +512,10 @@ export class PostgreSqlQuestionRepository implements IQuestionRepository {
         question.externalCode === externalCode &&
         question.id !== excludeId,
     )
+  }
+
+  async resetAsync(): Promise<void> {
+    this.adminQuestions.length = 0
   }
 }
 

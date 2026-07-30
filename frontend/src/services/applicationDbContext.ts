@@ -242,7 +242,7 @@ export class ApplicationDbContext {
  */
 export function createApplicationDbContext(
   options: Partial<DbContextOptions> = {},
-  env: DbContextFactoryEnv = import.meta.env,
+  env: DbContextFactoryEnv = import.meta.env ?? {},
 ): ApplicationDbContext {
   return new ApplicationDbContext({
     connectionString:
